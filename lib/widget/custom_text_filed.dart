@@ -13,11 +13,13 @@ class CustomTextFiled extends StatelessWidget {
   Widget? suffixIcon;
   bool? obscureText;
   int? maxLines;
+  TextInputType? keyboardType;
   String? Function(String?)? validator;
   TextEditingController? controller;
 
   CustomTextFiled(
       {this.bordercolor,
+      this.keyboardType=TextInputType.text,
       this.controller,
       this.validator,
       required this.hintText,
@@ -32,6 +34,7 @@ class CustomTextFiled extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return TextFormField(
+      keyboardType: keyboardType,
       controller: controller,
       validator: validator,
       maxLines: maxLines ?? 1,

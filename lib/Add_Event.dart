@@ -1,5 +1,7 @@
-import 'package:evently_app/home/event_item_widget.dart';
+import 'package:evently_app/firebaseutils.dart';
 import 'package:evently_app/home/tap_even_Widget.dart';
+import 'package:evently_app/model/event.dart';
+import 'package:evently_app/providers/eventListProvider.dart';
 import 'package:evently_app/utils/App_Styles.dart';
 import 'package:evently_app/utils/app_colors.dart';
 import 'package:evently_app/utils/assets_Manger.dart';
@@ -9,6 +11,7 @@ import 'package:evently_app/widget/custom_text_filed.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class AddEvent extends StatefulWidget {
   static String routeName = 'edit_evently';
@@ -26,9 +29,12 @@ class _AddEventState extends State<AddEvent> {
   String formattedDate = "";
   TimeOfDay? selectedTime;
   String formattedTime = "";
-
+  String selectedImage = "";
+  String selectedEvent = "";
+  late EventListProvider eventListProvider;
   @override
   Widget build(BuildContext context) {
+    eventListProvider = Provider.of<EventListProvider>(context);
     var height = MediaQuery.of(context).size.height;
     var width = MediaQuery.of(context).size.width;
     List<String> eventsNameList = [
@@ -53,6 +59,8 @@ class _AddEventState extends State<AddEvent> {
       AssetsManger.holiday,
       AssetsManger.eating,
     ];
+    selectedImage = imageSelectedNameList[selectedIndex];
+    selectedEvent = eventsNameList[selectedIndex];
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: AppColors.primaryLight),
@@ -63,13 +71,13 @@ class _AddEventState extends State<AddEvent> {
         ),
       ),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: width * 0.04),
+        padding: EdgeInsets.symmetric(horizontal: width * 0.05),
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                width: width * 0.5, // عرض ثابت
+                width: width * 0.5,
                 height: height * 0.3,
                 decoration:
                     BoxDecoration(borderRadius: BorderRadius.circular(16)),
@@ -157,8 +165,8 @@ class _AddEventState extends State<AddEvent> {
                         eventNameOrTime:
                             AppLocalizations.of(context)!.event_date,
                         chooseDateOrTime: selectedDate == null
-                            ? AppLocalizations.of(context)!.choose_time
-                            : formattedDate,
+                            ? AppLocalizations.of(context)!.choose_date
+                            : DateFormat("dd/MM/yyyy").format(selectedDate!),
                         onchooseDateOrTime: chooseDate,
                       ),
                       ChooseDateOrTime(
@@ -233,14 +241,28 @@ class _AddEventState extends State<AddEvent> {
 
   void addEvent() {
     if (formKey.currentState?.validate() == true) {
+      Event event = Event(
+          title: titleController.text,
+          description: descriptionController.text,
+          image: selectedImage,
+          dateTime: selectedDate!,
+          eventName: selectedEvent,
+          time: formattedTime);
+      FirebaseUtils.addEventToFireStore(event).timeout(
+        Duration(milliseconds: 500),
+        onTimeout: () {
+          print("event added succfully");
+          SnackBar(content: Text("Event Added"));
+          eventListProvider.getAllEvent();
+          Navigator.pop(context);
+        },
+      );
       if (selectedDate == null || selectedTime == null) {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text("Please choose both date and time for the event!"),
         ));
         return;
       }
-
-      // TODO: Add event logic here
       print("Event Title: ${titleController.text}");
       print("Event Description: ${descriptionController.text}");
       print("Event Date: $formattedDate");

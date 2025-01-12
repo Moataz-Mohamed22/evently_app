@@ -24,4 +24,6 @@ class AssetsManger {
   static String iconPassword = "assets/images/icon_password.png";
   static String iconGoogle = "assets/images/icon_google.png";
   static String iconLocation = "assets/images/IconLocation.png";
+  static String iconSelectedFavorite =
+      "assets/images/icon_selected_favorite.png";
 }

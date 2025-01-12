@@ -1,9 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:evently_app/Add_Event.dart';
 import 'package:evently_app/Home_Screen1.dart';
 import 'package:evently_app/auth/login_screen.dart';
 import 'package:evently_app/firebase_options.dart';
 import 'package:evently_app/providers/app_Theme_providers.dart';
 import 'package:evently_app/providers/app_language_provider.dart';
+import 'package:evently_app/providers/eventListProvider.dart';
 import 'package:evently_app/utils/app_theme.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -17,9 +19,12 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await FirebaseFirestore.instance.disableNetwork();
+
   runApp(MultiProvider(providers: [
     ChangeNotifierProvider(create: (context) => AppLanguageProvider()),
-    ChangeNotifierProvider(create: (context) => AppThemeProviders())
+    ChangeNotifierProvider(create: (context) => AppThemeProviders()),
+    ChangeNotifierProvider(create: (context) => EventListProvider()),
   ], child: MyApp()));
 }
 

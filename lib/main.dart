@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:evently_app/Add_Event.dart';
 import 'package:evently_app/Home_Screen1.dart';
-import 'package:evently_app/auth/login_screen.dart';
+import 'package:evently_app/auth/Login_Screen/login_screen.dart';
 import 'package:evently_app/firebase_options.dart';
 import 'package:evently_app/providers/app_Theme_providers.dart';
 import 'package:evently_app/providers/app_language_provider.dart';
@@ -12,7 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
 
-import 'auth/Registe_screen.dart';
+import 'auth/Register_Screen/Registe_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
